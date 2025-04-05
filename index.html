@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anonymous Chat</title>
+</head>
+<body>
+  <h2>Anonymous Chat</h2>
+  <div id="messages"></div>
+  <input type="text" id="messageInput" placeholder="Type your message">
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    // This sends the message to the backend server
+    function sendMessage() {
+      const message = document.getElementById("messageInput").value;
+
+      // Here you send the message to your backend server
+      fetch('https://your-backend-url.com/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: message })
+      }).then(response => {
+        document.getElementById("messageInput").value = '';
+      });
+    }
+
+    // This fetches messages from the backend to show on the chat
+    setInterval(function() {
+      fetch('https://your-backend-url.com/messages')
+        .then(response => response.json())
+        .then(data => {
+          const messagesContainer = document.getElementById("messages");
+          messagesContainer.innerHTML = ''; // Clear old messages
+          data.forEach(msg => {
+            const newMessage = document.createElement("div");
+            newMessage.textContent = msg.message;
+            messagesContainer.appendChild(newMessage);
+          });
+        });
+    }, 1000); // Every 1 second
+  </script>
+</body>
+</html>
